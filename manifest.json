@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+  
+    "name": "Othello Plus",
+    "description": "Extension for eothello to give you information about your game!",
+    "version": "1.0.0",
+
+    "icons": { "16": "ext_16.png",
+        "48": "ext_48.png",
+       "128": "ext_128.png"
+    }, 
+
+    "content_scripts": [
+      {
+        "matches": ["https://www.eothello.com/game/*"],
+        "js": ["openings.js", "othelloplus.js"]
+      }
+    ],
+    "permissions": [
+        "tabs", "http://www.eothello.com/*"
+    ]
+  }
