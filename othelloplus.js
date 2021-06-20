@@ -94,9 +94,10 @@ findOpening = (moves, bodyContainer) => {
         document.getElementById("opening-block").remove()
     }
 
-    const openingBlock = document.createElement("center")
-    openingBlock.setAttribute("id", "opening-block")
-    openingBlock.innerHTML = `Opening: ${openingName} (${lastKnownOpeningMove.fullPath.join(" ")})`
-    
-    bodyContainer.insertBefore(openingBlock, moveNavigator)
+    if (lastKnownOpeningMove) {
+        const openingBlock = document.createElement("center")
+        openingBlock.setAttribute("id", "opening-block")
+        openingBlock.innerHTML = `Opening: ${openingName} (${lastKnownOpeningMove.fullPath.join(" ")})`
+        bodyContainer.insertBefore(openingBlock, moveNavigator)
+    }
 }
