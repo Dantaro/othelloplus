@@ -21,10 +21,10 @@ getMovesFromPage = () => {
 // For each string in the openings JSON we'll identify the correct try, and once it gets to the final move in the sequence we'll also apply a name to the node.
 buildOpeningsTrees = () => {
     const openingTrees = {
-        "C4" : new OpeningNode("C4"),
-        "D3" : new OpeningNode("D3"),
-        "E6" : new OpeningNode("E6"),
-        "F5" : new OpeningNode("F5")
+        "C4": new OpeningNode("C4"),
+        "D3": new OpeningNode("D3"),
+        "E6": new OpeningNode("E6"),
+        "F5": new OpeningNode("F5")
     }
 
     return openings.map(opening => {
@@ -64,18 +64,18 @@ class OpeningNode {
 // Constants
 const openingMoveTrees = buildOpeningsTrees()
 const elementIds = {
-    MAIN_HOLDER : "othello-plus",
-    OPENING_BLOCK : "othello-plus-opening-block",
-    MOVES_BLOCK : "othello-plus-moves-block",
+    MAIN_HOLDER: "othello-plus",
+    OPENING_BLOCK: "othello-plus-opening-block",
+    MOVES_BLOCK: "othello-plus-moves-block",
     FOOTER: "othello-plus-footer"
 }
 const eothelloIds = {
-    MOVES_CONTENT : "moves-content"
+    MOVES_CONTENT: "moves-content"
 }
 
 // Code that runs the extension
 
-window.onload = function() {
+window.onload = function () {
     initOthelloPlusDiv()
     setInterval(buildContent, 2500)
 }
@@ -92,7 +92,7 @@ initOthelloPlusDiv = () => {
     main.setAttribute("id", elementIds.MAIN_HOLDER)
     main.style.position = "absolute"
     main.style.top = "40vh"
-    main.style.right = "15%"
+    main.style.right = "5%"
     main.style.borderRadius = "25px"
     main.style.padding = "15px"
     main.style.color = "black"
@@ -120,7 +120,7 @@ initOthelloPlusDiv = () => {
     footer.style.color = "black"
     footer.style.textAlign = "right"
     main.appendChild(footer)
-    
+
     // Attach element to the body container right before the move navigator
     //bodyContainer.insertBefore(main, moveNavigator)
 
@@ -141,7 +141,7 @@ findOpening = () => {
     let lastKnownOpeningMove
     moves = moves.slice(1)
     let openingName
-    for (let i = 0 ; i < moves.length ; i++) {
+    for (let i = 0; i < moves.length; i++) {
         let move = moves[i]
         let nextMove = currentMove.paths[move]
         if (nextMove == null) {
@@ -168,7 +168,7 @@ displayMoves = () => {
         const moveElement = document.createElement("div")
         moveElement.innerText = `${moveNumber}. ${move}`
         return moveElement
-    }).forEach (moveEle => {
+    }).forEach(moveEle => {
         movesBlock.appendChild(moveEle)
     })
 
