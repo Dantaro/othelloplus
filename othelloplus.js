@@ -1,11 +1,18 @@
+// Helper Methods
+
 // In Othello moves are annotated as a combination of letter (a-h) and number (1-8) corresponding to the location on the board.
 // So we can parse any string of moves (assuming they are a continuous string of moves) using this.
 moveSplitter = (moveString) => moveString.match(/.{1,2}/g)
 
+
+// Read moves from page.  EOthello tracks moves in a JS object that we don't have access too
+// Luckily it also tracks them on the page in a textarea titled "moves-content", so we'll pull them out of there.
+getMovesFromPage = () => moveSplitter(document.getElementById(eothelloIds.MOVES_CONTENT).innerText)
+
 // Parse openings (see openings.js) into a usable tree.  Each move acts as a node with the possible moves acting as children to the node
 // The interesting part is we end up with multiple trees, one for each of the four starting move for black (C4, D3, E6, and F5)
 // For each string in the openings JSON we'll identify the correct try, and once it gets to the final move in the sequence we'll also apply a name to the node.
-buildOpeningsTree = () => {
+buildOpeningsTrees = () => {
     const openingTrees = {
         "C4" : new OpeningNode("C4"),
         "D3" : new OpeningNode("D3"),
@@ -48,56 +55,100 @@ class OpeningNode {
 }
 
 // Constants
-const openingMoveTree = buildOpeningsTree()
+const openingMoveTrees = buildOpeningsTrees()
+const elementIds = {
+    MAIN_HOLDER : "othello-plus",
+    OPENING_BLOCK : "othello-plus-opening-block",
+    MOVES_BLOCK : "othello-plus-moves-block"
+}
+const eothelloIds = {
+    MOVES_CONTENT : "moves-content"
+}
 
 // Code that runs the extension
 
 window.onload = function() {
-    const bodyContainer = document.getElementsByClassName("body-container")[0]
-    const moveContainer = document.getElementById("moves-content")
-
-    // Read moves from page.  EOthello tracks moves in a JS object that we don't have access too
-    // Luckily it also tracks them on the page in a textarea titled "moves-content", so we'll pull them out of there.
-    let moves = moveSplitter(moveContainer.innerText)
-
-    // Because we can't tell when the page gets new info we just need to check ever 5-10 seconds if we've gotten new data
-    // But first we want to find it if we have it, so we don't wait 5 seconds to find the opening
-    findOpening(moves, bodyContainer)
-    setInterval(() => findOpening(moves, bodyContainer), 5000)
+    initOthelloPlusDiv()
+    setInterval(buildContent, 2500)
 }
 
-findOpening = (moves, bodyContainer) => {
-    let movesCopy = moves.map(it => it) //Clone the list so we don't mess with the original
 
+initOthelloPlusDiv = () => {
+    // Find the main body div
+    const bodyContainer = document.getElementsByClassName("body-container")[0]
+    // Find the move navigator
     const moveNavigator = document.getElementById("moveNavigator")
+
+    //Create our primary holder element
+    const main = document.createElement("center")
+    main.setAttribute("id", elementIds.MAIN_HOLDER)
+
+    // Create opening block
+    const openingBlock = document.createElement("div")
+    openingBlock.setAttribute("id", elementIds.OPENING_BLOCK)
+    main.appendChild(openingBlock)
+
+    // Create moves block
+    const movesBlock = document.createElement("div")
+    movesBlock.setAttribute("id", elementIds.MOVES_BLOCK)
+    movesBlock.style.display = "grid"
+    movesBlock.style.gridTemplateColumns = "20% 20% 20% 20% 20%"
+    movesBlock.style.width = "25%"
+    movesBlock.style.fontSize = "12px"
+    main.appendChild(movesBlock)
+    
+    // Attach element to the body container right before the move navigator
+    bodyContainer.insertBefore(main, moveNavigator)
+
+    buildContent()
+}
+
+buildContent = () => {
+    findOpening()
+    displayMoves()
+}
+
+
+
+findOpening = () => {
+    let moves = getMovesFromPage()
+
     // Find the opening used
-    let currentMove = openingMoveTree[movesCopy[0]]
+    let currentMove = openingMoveTrees[moves[0]]
     let lastKnownOpeningMove
-    movesCopy = movesCopy.slice(1)
+    moves = moves.slice(1)
 
     let openingName
-    for (let i = 0 ; i < movesCopy.length ; i++) {
+    for (let i = 0 ; i < moves.length ; i++) {
         if (currentMove.name !== undefined) {
             openingName = currentMove.name
             lastKnownOpeningMove = currentMove
         }
 
-        let move = movesCopy[i]
+        let move = moves[i]
         let nextMove = currentMove.paths[move]
         if (nextMove == null) {
             break
         }
         currentMove = nextMove
     }
-
-    if (document.getElementById("opening-block")) {
-        document.getElementById("opening-block").remove()
-    }
-
+    
     if (lastKnownOpeningMove) {
-        const openingBlock = document.createElement("center")
-        openingBlock.setAttribute("id", "opening-block")
-        openingBlock.innerHTML = `Opening: ${openingName} (${lastKnownOpeningMove.fullPath.join(" ")})`
-        bodyContainer.insertBefore(openingBlock, moveNavigator)
+        document.getElementById(elementIds.OPENING_BLOCK).innerHTML = `Opening: ${openingName} (${lastKnownOpeningMove.fullPath.join(" ")})`
     }
+}
+
+displayMoves = () => {
+    let moves = getMovesFromPage()
+    const movesBlock = document.getElementById(elementIds.MOVES_BLOCK)
+    movesBlock.innerHTML = ""
+    moves.map((move, index) => {
+        const moveNumber = index + 1
+        const moveElement = document.createElement("div")
+        moveElement.innerText = `${moveNumber}. ${move}`
+        return moveElement
+    }).forEach (moveEle => {
+        movesBlock.appendChild(moveEle)
+    })
+
 }
