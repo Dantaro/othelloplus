@@ -3,7 +3,7 @@
   
     "name": "Othello Plus",
     "description": "Extension for eothello to give you information about your game!",
-    "version": "1.0.0",
+    "version": "0.1.0",
 
     "icons": { "16": "ext_16.png",
         "48": "ext_48.png",

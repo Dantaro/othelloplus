@@ -66,7 +66,8 @@ const openingMoveTrees = buildOpeningsTrees()
 const elementIds = {
     MAIN_HOLDER : "othello-plus",
     OPENING_BLOCK : "othello-plus-opening-block",
-    MOVES_BLOCK : "othello-plus-moves-block"
+    MOVES_BLOCK : "othello-plus-moves-block",
+    FOOTER: "othello-plus-footer"
 }
 const eothelloIds = {
     MOVES_CONTENT : "moves-content"
@@ -90,8 +91,12 @@ initOthelloPlusDiv = () => {
     const main = document.createElement("center")
     main.setAttribute("id", elementIds.MAIN_HOLDER)
     main.style.position = "absolute"
-    main.style.top = "50vh"
+    main.style.top = "40vh"
     main.style.right = "15%"
+    main.style.borderRadius = "25px"
+    main.style.padding = "15px"
+    main.style.color = "black"
+    main.style.backgroundColor = "#00bc8c"
 
     // Create opening block
     const openingBlock = document.createElement("div")
@@ -105,6 +110,15 @@ initOthelloPlusDiv = () => {
     movesBlock.style.gridTemplateColumns = "20% 20% 20% 20% 20%"
     movesBlock.style.fontSize = "12px"
     main.appendChild(movesBlock)
+
+    // Add footer to div
+    const footer = document.createElement("footer")
+    footer.setAttribute("id", elementIds.FOOTER)
+    footer.innerText = "Othello Plus"
+    footer.style.fontSize = "8px"
+    footer.style.color = "black"
+    footer.style.textAlign = "right"
+    main.appendChild(footer)
     
     // Attach element to the body container right before the move navigator
     //bodyContainer.insertBefore(main, moveNavigator)
