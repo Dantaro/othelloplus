@@ -7,7 +7,14 @@ moveSplitter = (moveString) => moveString.match(/.{1,2}/g)
 
 // Read moves from page.  EOthello tracks moves in a JS object that we don't have access too
 // Luckily it also tracks them on the page in a textarea titled "moves-content", so we'll pull them out of there.
-getMovesFromPage = () => moveSplitter(document.getElementById(eothelloIds.MOVES_CONTENT).innerText)
+getMovesFromPage = () => {
+    const moves = document.getElementById(eothelloIds.MOVES_CONTENT).innerText
+    if (moves) {
+        return moveSplitter(moves)
+    } else {
+        return []
+    }
+}
 
 // Parse openings (see openings.js) into a usable tree.  Each move acts as a node with the possible moves acting as children to the node
 // The interesting part is we end up with multiple trees, one for each of the four starting move for black (C4, D3, E6, and F5)
@@ -82,6 +89,9 @@ initOthelloPlusDiv = () => {
     //Create our primary holder element
     const main = document.createElement("center")
     main.setAttribute("id", elementIds.MAIN_HOLDER)
+    main.style.position = "absolute"
+    main.style.top = "50vh"
+    main.style.right = "15%"
 
     // Create opening block
     const openingBlock = document.createElement("div")
@@ -93,12 +103,13 @@ initOthelloPlusDiv = () => {
     movesBlock.setAttribute("id", elementIds.MOVES_BLOCK)
     movesBlock.style.display = "grid"
     movesBlock.style.gridTemplateColumns = "20% 20% 20% 20% 20%"
-    movesBlock.style.width = "25%"
     movesBlock.style.fontSize = "12px"
     main.appendChild(movesBlock)
     
     // Attach element to the body container right before the move navigator
-    bodyContainer.insertBefore(main, moveNavigator)
+    //bodyContainer.insertBefore(main, moveNavigator)
+
+    document.body.appendChild(main)
 
     buildContent()
 }
@@ -108,31 +119,26 @@ buildContent = () => {
     displayMoves()
 }
 
-
-
 findOpening = () => {
     let moves = getMovesFromPage()
-
     // Find the opening used
     let currentMove = openingMoveTrees[moves[0]]
     let lastKnownOpeningMove
     moves = moves.slice(1)
-
     let openingName
     for (let i = 0 ; i < moves.length ; i++) {
-        if (currentMove.name !== undefined) {
-            openingName = currentMove.name
-            lastKnownOpeningMove = currentMove
-        }
-
         let move = moves[i]
         let nextMove = currentMove.paths[move]
         if (nextMove == null) {
             break
         }
         currentMove = nextMove
+
+        if (currentMove.name !== undefined) {
+            openingName = currentMove.name
+            lastKnownOpeningMove = currentMove
+        }
     }
-    
     if (lastKnownOpeningMove) {
         document.getElementById(elementIds.OPENING_BLOCK).innerHTML = `Opening: ${openingName} (${lastKnownOpeningMove.fullPath.join(" ")})`
     }
