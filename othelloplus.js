@@ -97,6 +97,7 @@ initOthelloPlusDiv = () => {
     main.style.padding = "15px"
     main.style.color = "black"
     main.style.backgroundColor = "#00bc8c"
+    main.style.zIndex = "-1" //If the screen gets too small, make sure we don't cover the board.  The board is more important than the extension
 
     // Create opening block
     const openingBlock = document.createElement("div")
