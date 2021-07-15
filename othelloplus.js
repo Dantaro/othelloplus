@@ -90,8 +90,8 @@ initOthelloPlusDiv = () => {
     //Create our primary holder element
     const main = document.createElement("center")
     main.setAttribute("id", elementIds.MAIN_HOLDER)
-    main.style.position = "absolute"
-    main.style.top = "40vh"
+    main.style.width = "560px"
+    main.style.margin = "0 auto"
     main.style.right = "5%"
     main.style.borderRadius = "25px"
     main.style.padding = "15px"
@@ -124,7 +124,9 @@ initOthelloPlusDiv = () => {
     // Attach element to the body container right before the move navigator
     //bodyContainer.insertBefore(main, moveNavigator)
 
-    document.body.appendChild(main)
+    //document.body.appendChild(main)
+
+    moveNavigator.after(main)
 
     buildContent()
 }
